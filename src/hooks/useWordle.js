@@ -10,7 +10,27 @@ const useWordle = (solution) =>{
 
 
     const formatGuess = () => {
+        let solutionArray = [...solution]
+        let formatedGuess = [...currentGuess].map((l)=>{
+            return {key:l,color:'grey'}
+        })
 
+        //Green Letters
+        formatedGuess.forEach((l,i)=>{
+            if(solutionArray[i]===l.key){
+                formatedGuess[i].color = 'green'
+                solutionArray[i] = null
+            }
+        })
+
+        //Yellow Letters
+        formatedGuess.forEach((l,i)=>{
+            if(solutionArray.includes(l.key) && l.color!=='green'){
+                formatedGuess[i].color = 'yellow'
+                solutionArray[solutionArray.indexOf(l.key)]=null
+            }
+        })
+        return formatedGuess
     }
 
     const addNewGuess = () => {
@@ -18,6 +38,23 @@ const useWordle = (solution) =>{
     }
 
     const handleKeyup = ({key}) => {
+
+        if(key === 'Enter'){
+            if(turn>5){
+                console.log('Game Over')
+                return
+            }
+            if(history.includes(currentGuess)){
+                console.log('Already Guessed')
+                return
+            }
+            if(currentGuess.length!==5){
+                console.log('Word must be 5 characters long')
+                return
+            }
+            const formatted = formatGuess()
+            console.log(formatted);
+        }
 
         if(key === 'Backspace'){
             setCurrentGuess((prev)=>{
